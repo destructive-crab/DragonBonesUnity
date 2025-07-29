@@ -20,17 +20,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
-using DragonBones;
 
 namespace DragonBones
 {
     [DisallowMultipleComponent]
     [ExecuteInEditMode]
-    [RequireComponent(typeof(UnityArmatureComponent))]
-    public class UnityCombineMeshs : MonoBehaviour
+    [RequireComponent(typeof(ArmatureUnityInstance))]
+    public class UnityCombineMeshes : MonoBehaviour
     {
         [HideInInspector]
         public List<string> slotNames = new List<string>();
@@ -39,7 +38,7 @@ namespace DragonBones
         [HideInInspector]
         public bool dirty = false;
 
-        private UnityArmatureComponent _unityArmature;
+        private ArmatureUnityInstance armatureUnity;
         private int _subSlotCount;
         private int _verticeOffset;
 
@@ -47,16 +46,16 @@ namespace DragonBones
 
         private void Start()
         {
-            this._unityArmature = GetComponent<UnityArmatureComponent>();
+            this.armatureUnity = GetComponent<ArmatureUnityInstance>();
             this._isCanCombineMesh = true;
             this.dirty = true;
         }
 
         private void OnDestroy()
         {
-            if (this._unityArmature != null)
+            if (this.armatureUnity != null)
             {
-                this.RestoreArmature(this._unityArmature._armature);
+                this.RestoreArmature(this.armatureUnity._armature);
             }
 
             if (this.meshBuffers != null)
@@ -71,7 +70,7 @@ namespace DragonBones
             this.meshBuffers = null;
             this.dirty = false;
 
-            this._unityArmature = null;
+            this.armatureUnity = null;
             this._subSlotCount = 0;
             this._verticeOffset = -1;
 
@@ -125,7 +124,7 @@ namespace DragonBones
 
         public void BeginCombineMesh()
         {
-            if (!this._isCanCombineMesh || _unityArmature.isUGUI)
+            if (!this._isCanCombineMesh || armatureUnity.isUGUI)
             {
                 return;
             }
@@ -148,7 +147,7 @@ namespace DragonBones
 
             List<CombineMeshInfo> combineSlots = new List<CombineMeshInfo>();
             //
-            this.CollectMesh(this._unityArmature.armature, combineSlots);
+            this.CollectMesh(this.armatureUnity.armature, combineSlots);
 
             //
             //先合并
@@ -304,7 +303,7 @@ namespace DragonBones
 
                 if (slotMeshProxy != null && slotDisplay != null && slotDisplay.activeSelf && !slot._isIgnoreCombineMesh)
                 {
-                    var parentTransfrom = (slot._armature.proxy as UnityArmatureComponent).transform;
+                    var parentTransfrom = (slot._armature.proxy as ArmatureUnityInstance).transform;
                     CombineInstance com = new CombineInstance();
                     com.mesh = slot._meshBuffer.sharedMesh;
 

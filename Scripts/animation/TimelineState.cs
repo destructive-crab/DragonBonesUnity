@@ -428,8 +428,8 @@ namespace DragonBones
         public override void FadeOut()
         {
             var result = this.bonePose.result;
-            result.rotation = Transform.NormalizeRadian(result.rotation);
-            result.skew = Transform.NormalizeRadian(result.skew);
+            result.rotation = DBTransform.NormalizeRadian(result.rotation);
+            result.skew = DBTransform.NormalizeRadian(result.skew);
         }
     }
     /// <internal/>
@@ -519,7 +519,7 @@ namespace DragonBones
                     if (this._frameIndex == this._frameCount - 1)
                     {
                         valueOffset = this._animationData.frameFloatOffset + this._frameValueOffset;
-                        delta.rotation = Transform.NormalizeRadian(frameFloatArray[valueOffset++] - current.rotation);
+                        delta.rotation = DBTransform.NormalizeRadian(frameFloatArray[valueOffset++] - current.rotation);
                     }
                     else
                     {
@@ -567,8 +567,8 @@ namespace DragonBones
         public override void FadeOut()
         {
             var result = this.bonePose.result;
-            result.rotation = Transform.NormalizeRadian(result.rotation);
-            result.skew = Transform.NormalizeRadian(result.skew);
+            result.rotation = DBTransform.NormalizeRadian(result.rotation);
+            result.skew = DBTransform.NormalizeRadian(result.skew);
         }
     }
     /// <internal/>

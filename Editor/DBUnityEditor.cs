@@ -25,7 +25,6 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using System.Text.RegularExpressions;
 
 namespace DragonBones
 {
@@ -165,7 +164,7 @@ namespace DragonBones
         }
 
 
-        public static bool ChangeDragonBonesData(UnityArmatureComponent _armatureComponent, TextAsset dragonBoneJSON)
+        public static bool ChangeDragonBonesData(ArmatureUnityInstance armatureUnityInstance, TextAsset dragonBoneJSON)
         {
             if (dragonBoneJSON != null)
             {
@@ -175,43 +174,43 @@ namespace DragonBones
                 UnityDragonBonesData.TextureAtlas[] textureAtlas = DBUnityEditor.GetTextureAtlasByJSONs(textureAtlasJSONs);
 
                 UnityDragonBonesData data = DBUnityEditor.CreateUnityDragonBonesData(dragonBoneJSON, textureAtlas);
-                _armatureComponent.unityData = data;
+                armatureUnityInstance.unityData = data;
 
-                var dragonBonesData = UnityFactory.factory.LoadData(data, _armatureComponent.isUGUI);
+                var dragonBonesData = DBUnityFactory.factory.LoadData(data, armatureUnityInstance.isUGUI);
                 if (dragonBonesData != null)
                 {
-                    Undo.RecordObject(_armatureComponent, "Set DragonBones");
+                    Undo.RecordObject(armatureUnityInstance, "Set DragonBones");
 
-                    _armatureComponent.unityData = data;
+                    armatureUnityInstance.unityData = data;
 
                     var armatureName = dragonBonesData.armatureNames[0];
-                    ChangeArmatureData(_armatureComponent, armatureName, _armatureComponent.unityData.dataName);
+                    ChangeArmatureData(armatureUnityInstance, armatureName, armatureUnityInstance.unityData.dataName);
 
-                    _armatureComponent.gameObject.name = armatureName;
+                    armatureUnityInstance.gameObject.name = armatureName;
 
-                    EditorUtility.SetDirty(_armatureComponent);
+                    EditorUtility.SetDirty(armatureUnityInstance);
 
                     return true;
                 }
                 else
                 {
-                    EditorUtility.DisplayDialog("Error", "Could not load dragonBones data.", "OK", null);
+                    EditorUtility.DisplayDialog("Error", "Could not load Dragon Bones data.", "OK", null);
 
                     return false;
                 }
             }
-            else if (_armatureComponent.unityData != null)
+            else if (armatureUnityInstance.unityData != null)
             {
-                Undo.RecordObject(_armatureComponent, "Set DragonBones");
+                Undo.RecordObject(armatureUnityInstance, "Set Dragon Bones");
 
-                _armatureComponent.unityData = null;
+                armatureUnityInstance.unityData = null;
 
-                if (_armatureComponent.armature != null)
+                if (armatureUnityInstance.armature != null)
                 {
-                    _armatureComponent.Dispose(false);
+                    armatureUnityInstance.Dispose(false);
                 }
 
-                EditorUtility.SetDirty(_armatureComponent);
+                EditorUtility.SetDirty(armatureUnityInstance);
 
                 return true;
             }
@@ -219,33 +218,30 @@ namespace DragonBones
             return false;
         }
 
-        public static void ChangeArmatureData(UnityArmatureComponent _armatureComponent, string armatureName, string dragonBonesName)
+        public static void ChangeArmatureData(ArmatureUnityInstance armatureUnityInstance, string armatureName, string dragonBonesName)
         {
-            bool isUGUI = _armatureComponent.isUGUI;
+            bool isUGUI = armatureUnityInstance.isUGUI;
             UnityDragonBonesData unityData = null;
             Slot slot = null;
-            if (_armatureComponent.armature != null)
+            if (armatureUnityInstance.armature != null)
             {
-                unityData = _armatureComponent.unityData;
-                slot = _armatureComponent.armature.parent;
-                _armatureComponent.Dispose(false);
+                unityData = armatureUnityInstance.unityData;
+                slot = armatureUnityInstance.armature.parent;
+                armatureUnityInstance.Dispose(false);
 
-                UnityFactory.factory._dragonBones.AdvanceTime(0.0f);
+                DBUnityFactory.factory._dragonBones.AdvanceTime(0.0f);
 
-                _armatureComponent.unityData = unityData;
+                armatureUnityInstance.unityData = unityData;
             }
 
-            _armatureComponent.armatureName = armatureName;
-            _armatureComponent.isUGUI = isUGUI;
+            armatureUnityInstance.armatureName = armatureName;
+            armatureUnityInstance.isUGUI = isUGUI;
 
-            _armatureComponent = UnityFactory.factory.BuildArmatureComponent(_armatureComponent.armatureName, dragonBonesName, null, _armatureComponent.unityData.dataName, _armatureComponent.gameObject, _armatureComponent.isUGUI);
+            armatureUnityInstance = DBUnityFactory.factory.BuildArmatureComponent(armatureUnityInstance.armatureName, dragonBonesName, null, armatureUnityInstance.unityData.dataName, armatureUnityInstance.gameObject, armatureUnityInstance.isUGUI);
             if (slot != null)
             {
-                slot.childArmature = _armatureComponent.armature;
+                slot.childArmature = armatureUnityInstance.armature;
             }
-
-            _armatureComponent.sortingLayerName = _armatureComponent.sortingLayerName;
-            _armatureComponent.sortingOrder = _armatureComponent.sortingOrder;
         }
 
         public static UnityEngine.Transform GetSelectionParentTransform()
@@ -360,7 +356,7 @@ namespace DragonBones
                 var dataName = jsonObject.ContainsKey("name") ? jsonObject["name"] as string : "";
 
                 //先从缓存里面取
-                UnityDragonBonesData data = UnityFactory.factory.GetCacheUnityDragonBonesData(dataName);
+                UnityDragonBonesData data = DBUnityFactory.factory.GetCacheUnityDragonBonesData(dataName);
 
                 //缓存中没有，从资源里面取
                 if (data == null)
@@ -422,7 +418,7 @@ namespace DragonBones
                 }
 
                 //
-                UnityFactory.factory.AddCacheUnityDragonBonesData(data);
+                DBUnityFactory.factory.AddCacheUnityDragonBonesData(data);
 
                 AssetDatabase.SaveAssets();
                 return data;
@@ -465,10 +461,10 @@ namespace DragonBones
         }
 
 
-        private static UnityArmatureComponent _CreateEmptyObject(UnityEngine.Transform parentTransform)
+        private static ArmatureUnityInstance _CreateEmptyObject(UnityEngine.Transform parentTransform)
         {
-            var gameObject = new GameObject("New Armature Object", typeof(UnityArmatureComponent));
-            var armatureComponent = gameObject.GetComponent<UnityArmatureComponent>();
+            var gameObject = new GameObject("New Armature Object", typeof(ArmatureUnityInstance));
+            var armatureComponent = gameObject.GetComponent<ArmatureUnityInstance>();
             gameObject.transform.SetParent(parentTransform, false);
 
             //

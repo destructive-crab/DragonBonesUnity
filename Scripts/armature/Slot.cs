@@ -233,7 +233,6 @@ namespace DragonBones
         /// <private/>
         protected abstract void _RemoveDisplay();
         /// <private/>
-        protected abstract void _UpdateZOrder();
         /// <private/>
         internal abstract void _UpdateVisible();
         /// <private/>
@@ -379,13 +378,13 @@ namespace DragonBones
                     // Update replace pivot. TODO
                     if (this._displayData != null && rawDisplayData != null && this._displayData != rawDisplayData)
                     {
-                        rawDisplayData.transform.ToMatrix(Slot._helpMatrix);
+                        rawDisplayData.DBTransform.ToMatrix(Slot._helpMatrix);
                         Slot._helpMatrix.Invert();
                         Slot._helpMatrix.TransformPoint(0.0f, 0.0f, Slot._helpPoint);
                         this._pivotX -= Slot._helpPoint.x;
                         this._pivotY -= Slot._helpPoint.y;
 
-                        this._displayData.transform.ToMatrix(Slot._helpMatrix);
+                        this._displayData.DBTransform.ToMatrix(Slot._helpMatrix);
                         Slot._helpMatrix.Invert();
                         Slot._helpMatrix.TransformPoint(0.0f, 0.0f, Slot._helpPoint);
                         this._pivotX += Slot._helpPoint.x;
@@ -407,12 +406,12 @@ namespace DragonBones
                 if (rawDisplayData != null)
                 {
                     // Compatible.
-                    this.origin = rawDisplayData.transform;
+                    this.origin = rawDisplayData.DBTransform;
                 }
                 else if (this._displayData != null)
                 {
                     // Compatible.
-                    this.origin = this._displayData.transform;
+                    this.origin = this._displayData.DBTransform;
                 }
                 else
                 {
@@ -741,7 +740,6 @@ namespace DragonBones
             if (this._zOrderDirty)
             {
                 this._zOrderDirty = false;
-                this._UpdateZOrder();
             }
 
             if (cacheFrameIndex >= 0 && this._cachedFrameIndices != null)

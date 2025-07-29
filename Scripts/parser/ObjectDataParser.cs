@@ -169,7 +169,7 @@ namespace DragonBones
         private float _prevRotation = 0.0f;
         private readonly Matrix _helpMatrixA = new Matrix();
         private readonly Matrix _helpMatrixB = new Matrix();
-        private readonly Transform _helpTransform = new Transform();
+        private readonly DBTransform helpDBTransform = new DBTransform();
         private readonly ColorTransform _helpColorTransform = new ColorTransform();
         private readonly Point _helpPoint = new Point();
         private readonly List<float> _helpArray = new List<float>();
@@ -591,7 +591,7 @@ namespace DragonBones
 
             if (rawData.ContainsKey(ObjectDataParser.TRANSFORM))
             {
-                this._ParseTransform(rawData[ObjectDataParser.TRANSFORM] as Dictionary<string, object>, bone.transform, scale);
+                this._ParseTransform(rawData[ObjectDataParser.TRANSFORM] as Dictionary<string, object>, bone.DBTransform, scale);
             }
 
             return bone;
@@ -795,7 +795,7 @@ namespace DragonBones
 
             if (display != null && rawData.ContainsKey(ObjectDataParser.TRANSFORM))
             {
-                this._ParseTransform(rawData[ObjectDataParser.TRANSFORM] as Dictionary<string, object>, display.transform, this._armature.scale);
+                this._ParseTransform(rawData[ObjectDataParser.TRANSFORM] as Dictionary<string, object>, display.DBTransform, this._armature.scale);
             }
 
             return display;
@@ -1600,19 +1600,19 @@ namespace DragonBones
         protected int _ParseBoneAllFrame(Dictionary<string, object> rawData, int frameStart, int frameCount)
         {
 
-            this._helpTransform.Identity();
+            this.helpDBTransform.Identity();
             if (rawData.ContainsKey(ObjectDataParser.TRANSFORM))
             {
-                this._ParseTransform(rawData[ObjectDataParser.TRANSFORM] as Dictionary<string, object>, this._helpTransform, 1.0f);
+                this._ParseTransform(rawData[ObjectDataParser.TRANSFORM] as Dictionary<string, object>, this.helpDBTransform, 1.0f);
             }
 
             // Modify rotation.
-            var rotation = this._helpTransform.rotation;
+            var rotation = this.helpDBTransform.rotation;
             if (frameStart != 0)
             {
                 if (this._prevClockwise == 0)
                 {
-                    rotation = this._prevRotation + Transform.NormalizeRadian(rotation - this._prevRotation);
+                    rotation = this._prevRotation + DBTransform.NormalizeRadian(rotation - this._prevRotation);
                 }
                 else
                 {
@@ -1621,7 +1621,7 @@ namespace DragonBones
                         this._prevClockwise = this._prevClockwise > 0 ? this._prevClockwise - 1 : this._prevClockwise + 1;
                     }
 
-                    rotation = this._prevRotation + rotation - this._prevRotation + Transform.PI_D * this._prevClockwise;
+                    rotation = this._prevRotation + rotation - this._prevRotation + DBTransform.PI_D * this._prevClockwise;
                 }
             }
 
@@ -1631,12 +1631,12 @@ namespace DragonBones
             var frameOffset = this._ParseTweenFrame(rawData, frameStart, frameCount);
             var frameFloatOffset = this._frameFloatArray.Count;
             this._frameFloatArray.ResizeList(this._frameFloatArray.Count + 6);
-            this._frameFloatArray[frameFloatOffset++] = this._helpTransform.x;
-            this._frameFloatArray[frameFloatOffset++] = this._helpTransform.y;
+            this._frameFloatArray[frameFloatOffset++] = this.helpDBTransform.x;
+            this._frameFloatArray[frameFloatOffset++] = this.helpDBTransform.y;
             this._frameFloatArray[frameFloatOffset++] = rotation;
-            this._frameFloatArray[frameFloatOffset++] = this._helpTransform.skew;
-            this._frameFloatArray[frameFloatOffset++] = this._helpTransform.scaleX;
-            this._frameFloatArray[frameFloatOffset++] = this._helpTransform.scaleY;
+            this._frameFloatArray[frameFloatOffset++] = this.helpDBTransform.skew;
+            this._frameFloatArray[frameFloatOffset++] = this.helpDBTransform.scaleX;
+            this._frameFloatArray[frameFloatOffset++] = this.helpDBTransform.scaleY;
 
             this._ParseActionDataInFrame(rawData, frameStart, this._bone, this._slot);
 
@@ -1656,12 +1656,12 @@ namespace DragonBones
         protected int _ParseBoneRotateFrame(Dictionary<string, object> rawData, int frameStart, int frameCount)
         {
             // Modify rotation.
-            var rotation = ObjectDataParser._GetNumber(rawData, ObjectDataParser.ROTATE, 0.0f) * Transform.DEG_RAD;
+            var rotation = ObjectDataParser._GetNumber(rawData, ObjectDataParser.ROTATE, 0.0f) * DBTransform.DEG_RAD;
             if (frameStart != 0)
             {
                 if (this._prevClockwise == 0)
                 {
-                    rotation = this._prevRotation + Transform.NormalizeRadian(rotation - this._prevRotation);
+                    rotation = this._prevRotation + DBTransform.NormalizeRadian(rotation - this._prevRotation);
                 }
                 else
                 {
@@ -1670,7 +1670,7 @@ namespace DragonBones
                         this._prevClockwise = this._prevClockwise > 0 ? this._prevClockwise - 1 : this._prevClockwise + 1;
                     }
 
-                    rotation = this._prevRotation + rotation - this._prevRotation + Transform.PI_D * this._prevClockwise;
+                    rotation = this._prevRotation + rotation - this._prevRotation + DBTransform.PI_D * this._prevClockwise;
                 }
             }
 
@@ -1681,7 +1681,7 @@ namespace DragonBones
             var frameFloatOffset = this._frameFloatArray.Count;
             this._frameFloatArray.ResizeList(this._frameFloatArray.Count + 2);
             this._frameFloatArray[frameFloatOffset++] = rotation;
-            this._frameFloatArray[frameFloatOffset++] = ObjectDataParser._GetNumber(rawData, ObjectDataParser.SKEW, 0.0f) * Transform.DEG_RAD;
+            this._frameFloatArray[frameFloatOffset++] = ObjectDataParser._GetNumber(rawData, ObjectDataParser.SKEW, 0.0f) * DBTransform.DEG_RAD;
 
             return frameOffset;
         }
@@ -1987,24 +1987,24 @@ namespace DragonBones
             return actions;
         }
 
-        protected void _ParseTransform(Dictionary<string, object> rawData, Transform transform, float scale)
+        protected void _ParseTransform(Dictionary<string, object> rawData, DBTransform dbTransform, float scale)
         {
-            transform.x = ObjectDataParser._GetNumber(rawData, ObjectDataParser.X, 0.0f) * scale;
-            transform.y = ObjectDataParser._GetNumber(rawData, ObjectDataParser.Y, 0.0f) * scale;
+            dbTransform.x = ObjectDataParser._GetNumber(rawData, ObjectDataParser.X, 0.0f) * scale;
+            dbTransform.y = ObjectDataParser._GetNumber(rawData, ObjectDataParser.Y, 0.0f) * scale;
 
             if (rawData.ContainsKey(ObjectDataParser.ROTATE) || rawData.ContainsKey(ObjectDataParser.SKEW))
             {
-                transform.rotation = Transform.NormalizeRadian(ObjectDataParser._GetNumber(rawData, ObjectDataParser.ROTATE, 0.0f) * Transform.DEG_RAD);
-                transform.skew = Transform.NormalizeRadian(ObjectDataParser._GetNumber(rawData, ObjectDataParser.SKEW, 0.0f) * Transform.DEG_RAD);
+                dbTransform.rotation = DBTransform.NormalizeRadian(ObjectDataParser._GetNumber(rawData, ObjectDataParser.ROTATE, 0.0f) * DBTransform.DEG_RAD);
+                dbTransform.skew = DBTransform.NormalizeRadian(ObjectDataParser._GetNumber(rawData, ObjectDataParser.SKEW, 0.0f) * DBTransform.DEG_RAD);
             }
             else if (rawData.ContainsKey(ObjectDataParser.SKEW_X) || rawData.ContainsKey(ObjectDataParser.SKEW_Y))
             {
-                transform.rotation = Transform.NormalizeRadian(ObjectDataParser._GetNumber(rawData, ObjectDataParser.SKEW_Y, 0.0f) * Transform.DEG_RAD);
-                transform.skew = Transform.NormalizeRadian(ObjectDataParser._GetNumber(rawData, ObjectDataParser.SKEW_X, 0.0f) * Transform.DEG_RAD) - transform.rotation;
+                dbTransform.rotation = DBTransform.NormalizeRadian(ObjectDataParser._GetNumber(rawData, ObjectDataParser.SKEW_Y, 0.0f) * DBTransform.DEG_RAD);
+                dbTransform.skew = DBTransform.NormalizeRadian(ObjectDataParser._GetNumber(rawData, ObjectDataParser.SKEW_X, 0.0f) * DBTransform.DEG_RAD) - dbTransform.rotation;
             }
 
-            transform.scaleX = ObjectDataParser._GetNumber(rawData, ObjectDataParser.SCALE_X, 1.0f);
-            transform.scaleY = ObjectDataParser._GetNumber(rawData, ObjectDataParser.SCALE_Y, 1.0f);
+            dbTransform.scaleX = ObjectDataParser._GetNumber(rawData, ObjectDataParser.SCALE_X, 1.0f);
+            dbTransform.scaleY = ObjectDataParser._GetNumber(rawData, ObjectDataParser.SCALE_Y, 1.0f);
         }
 
         protected void _ParseColorTransform(Dictionary<string, object> rawData, ColorTransform color)

@@ -1414,9 +1414,9 @@ namespace DragonBones
     /// <private/>
     internal class BonePose : BaseObject
     {
-        public readonly Transform current = new Transform();
-        public readonly Transform delta = new Transform();
-        public readonly Transform result = new Transform();
+        public readonly DBTransform current = new DBTransform();
+        public readonly DBTransform delta = new DBTransform();
+        public readonly DBTransform result = new DBTransform();
 
         protected override void _OnClear()
         {

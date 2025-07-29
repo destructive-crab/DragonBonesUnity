@@ -63,13 +63,13 @@ namespace DragonBones
         public string name;
         public string path;
         public SkinData parent;
-        public readonly Transform transform = new Transform();
+        public readonly DBTransform DBTransform = new DBTransform();
 
         protected override void _OnClear()
         {
             this.name = "";
             this.path = "";
-            this.transform.Identity();
+            this.DBTransform.Identity();
             this.parent = null; //
         }
     }

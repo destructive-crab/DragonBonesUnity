@@ -33,7 +33,7 @@ namespace DragonBones
     {
         void Update()
         {
-            UnityFactory.factory._dragonBones.AdvanceTime(Time.deltaTime);
+            DBUnityFactory.factory._dragonBones.AdvanceTime(Time.deltaTime);
         }
     }
 
@@ -48,7 +48,7 @@ namespace DragonBones
     /// </summary>
     /// <version>DragonBones 3.0</version>
     /// <language>zh_CN</language>
-    public class UnityFactory : BaseFactory
+    public class DBUnityFactory : BaseFactory
     {
         /// <summary>
         /// 创建材质时默认使用的 shader。
@@ -64,7 +64,7 @@ namespace DragonBones
         internal const string defaultUIShaderName = "UI/Default";
 
         internal static DragonBones _dragonBonesInstance = null;
-        private static UnityFactory _factory = null;
+        private static DBUnityFactory _factory = null;
         private static GameObject _gameObject = null;
 
         //
@@ -85,13 +85,13 @@ namespace DragonBones
         /// </summary>
         /// <version>DragonBones 4.7</version>
         /// <language>zh_CN</language>
-        public static UnityFactory factory
+        public static DBUnityFactory factory
         {
             get
             {
                 if (_factory == null)
                 {
-                    _factory = new UnityFactory();
+                    _factory = new DBUnityFactory();
                 }
 
                 return _factory;
@@ -99,7 +99,7 @@ namespace DragonBones
         }
 
         /// <inheritDoc/>
-        public UnityFactory(DataParser dataParser = null) : base(dataParser)
+        public DBUnityFactory(DataParser dataParser = null) : base(dataParser)
         {
             Init();
         }
@@ -188,10 +188,10 @@ namespace DragonBones
         {
             var armature = BaseObject.BorrowObject<Armature>();
             var armatureDisplay = _armatureGameObject == null ? new GameObject(dataPackage.armature.name) : _armatureGameObject;
-            var armatureComponent = armatureDisplay.GetComponent<UnityArmatureComponent>();
+            var armatureComponent = armatureDisplay.GetComponent<ArmatureUnityInstance>();
             if (armatureComponent == null)
             {
-                armatureComponent = armatureDisplay.AddComponent<UnityArmatureComponent>();
+                armatureComponent = armatureDisplay.AddComponent<ArmatureUnityInstance>();
                 armatureComponent.isUGUI = _isUGUI;
 
                 if (armatureComponent.isUGUI)
@@ -225,7 +225,7 @@ namespace DragonBones
         protected override Armature _BuildChildArmature(BuildArmaturePackage dataPackage, Slot slot, DisplayData displayData)
         {
             var childDisplayName = slot.slotData.name + " (" + displayData.path + ")"; //
-            var proxy = slot.armature.proxy as UnityArmatureComponent;
+            var proxy = slot.armature.proxy as ArmatureUnityInstance;
             var childTransform = proxy.transform.Find(childDisplayName);
             Armature childArmature = null;
             if (childTransform == null)
@@ -258,7 +258,7 @@ namespace DragonBones
 
             //
             var childArmatureDisplay = childArmature.display as GameObject;
-            childArmatureDisplay.GetComponent<UnityArmatureComponent>().isUGUI = proxy.GetComponent<UnityArmatureComponent>().isUGUI;
+            childArmatureDisplay.GetComponent<ArmatureUnityInstance>().isUGUI = proxy.GetComponent<ArmatureUnityInstance>().isUGUI;
             childArmatureDisplay.name = childDisplayName;
             childArmatureDisplay.transform.SetParent(proxy.transform, false);
             childArmatureDisplay.gameObject.hideFlags = HideFlags.HideInHierarchy;
@@ -282,7 +282,7 @@ namespace DragonBones
             {
                 if (gameObject.hideFlags == HideFlags.None)
                 {
-                    var combineMeshs = (armature.proxy as UnityArmatureComponent).GetComponent<UnityCombineMeshs>();
+                    var combineMeshs = (armature.proxy as ArmatureUnityInstance).GetComponent<UnityCombineMeshes>();
                     if (combineMeshs != null)
                     {
                         isNeedIngoreCombineMesh = !combineMeshs.slotNames.Contains(slotData.name);
@@ -326,7 +326,7 @@ namespace DragonBones
         /// <returns>骨架的显示容器。</returns>
         /// <version> DragonBones 4.5</version>
         /// <language>zh_CN</language>
-        public UnityArmatureComponent BuildArmatureComponent(string armatureName, string dragonBonesName = "", string skinName = "", string textureAtlasName = "", GameObject gameObject = null, bool isUGUI = false)
+        public ArmatureUnityInstance BuildArmatureComponent(string armatureName, string dragonBonesName = "", string skinName = "", string textureAtlasName = "", GameObject gameObject = null, bool isUGUI = false)
         {
             _armatureGameObject = gameObject;
             _isUGUI = isUGUI;
@@ -337,7 +337,7 @@ namespace DragonBones
                 _dragonBones.clock.Add(armature);
 
                 var armatureDisplay = armature.display as GameObject;
-                var armatureComponent = armatureDisplay.GetComponent<UnityArmatureComponent>();
+                var armatureComponent = armatureDisplay.GetComponent<ArmatureUnityInstance>();
 
                 return armatureComponent;
             }
@@ -832,23 +832,23 @@ namespace DragonBones
         /// <summary>
         /// Refresh the Armature textureAtlas data.
         /// </summary>
-        /// <param name="unityArmature">UnityArmatureComponent</param>
+        /// <param name="armatureUnity">UnityArmatureComponent</param>
         /// <version>DragonBones 4.5</version>
         /// <language>en_US</language>
 
         /// <summary>
         /// 刷新骨架的贴图集数据。
         /// </summary>
-        /// <param name="unityArmature">骨架</param>
+        /// <param name="armatureUnity">骨架</param>
         /// <version>DragonBones 4.5</version>
         /// <language>zh_CN</language>
-        public void RefreshAllTextureAtlas(UnityArmatureComponent unityArmature)
+        public void RefreshAllTextureAtlas(ArmatureUnityInstance armatureUnity)
         {
             foreach (var textureAtlasDatas in _textureAtlasDataMap.Values)
             {
                 foreach (UnityTextureAtlasData textureAtlasData in textureAtlasDatas)
                 {
-                    _RefreshTextureAtlas(textureAtlasData, unityArmature.isUGUI);
+                    _RefreshTextureAtlas(textureAtlasData, armatureUnity.isUGUI);
                 }
             }
         }
@@ -864,7 +864,7 @@ namespace DragonBones
                 {
                     var textureAtlasData = textureData.parent as UnityTextureAtlasData;
 
-                    var oldIsUGUI = (slot._armature.proxy as UnityArmatureComponent).isUGUI;
+                    var oldIsUGUI = (slot._armature.proxy as ArmatureUnityInstance).isUGUI;
 
                     if ((oldIsUGUI && textureAtlasData.uiTexture == null) || (!oldIsUGUI && textureAtlasData.texture == null))
                     {
@@ -992,7 +992,7 @@ namespace DragonBones
                 newDisplayData.type = prevDispalyData.type;
                 newDisplayData.name = prevDispalyData.name;
                 newDisplayData.path = prevDispalyData.path;
-                newDisplayData.transform.CopyFrom(prevDispalyData.transform);
+                newDisplayData.DBTransform.CopyFrom(prevDispalyData.DBTransform);
                 newDisplayData.parent = prevDispalyData.parent;
                 (newDisplayData as ImageDisplayData).pivot.CopyFrom((prevDispalyData as ImageDisplayData).pivot);
                 (newDisplayData as ImageDisplayData).texture = newTextureData;
@@ -1003,7 +1003,7 @@ namespace DragonBones
                 newDisplayData.type = prevDispalyData.type;
                 newDisplayData.name = prevDispalyData.name;
                 newDisplayData.path = prevDispalyData.path;
-                newDisplayData.transform.CopyFrom(prevDispalyData.transform);
+                newDisplayData.DBTransform.CopyFrom(prevDispalyData.DBTransform);
                 newDisplayData.parent = prevDispalyData.parent;
                 (newDisplayData as MeshDisplayData).texture = newTextureData;
 

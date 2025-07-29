@@ -22,73 +22,25 @@
  */
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DragonBones
 {
-    /// <summary>
-    /// - Bone is one of the most important logical units in the armature animation system,
-    /// and is responsible for the realization of translate, rotation, scaling in the animations.
-    /// A armature can contain multiple bones.
-    /// </summary>
-    /// <see cref="DragonBones.BoneData"/>
-    /// <see cref="DragonBones.Armature"/>
-    /// <see cref="DragonBones.Slot"/>
-    /// <version>DragonBones 3.0</version>
-    /// <language>en_US</language>
-
-    /// <summary>
-    /// - 骨骼在骨骼动画体系中是最重要的逻辑单元之一，负责动画中的平移、旋转、缩放的实现。
-    /// 一个骨架中可以包含多个骨骼。
-    /// </summary>
-    /// <see cref="DragonBones.BoneData"/>
-    /// <see cref="DragonBones.Armature"/>
-    /// <see cref="DragonBones.Slot"/>
-    /// <version>DragonBones 3.0</version>
-    /// <language>zh_CN</language>
     public class Bone : TransformObject
     {
-        /// <summary>
-        /// - The offset mode.
-        /// </summary>
-        /// <see cref="offset"/>
-        /// <version>DragonBones 5.5</version>
-        /// <language>en_US</language>
-
-        /// <summary>
-        /// - 偏移模式。
-        /// </summary>
-        /// <see cref="offset"/>
-        /// <version>DragonBones 5.5</version>
-        /// <language>zh_CN</language>
         internal OffsetMode offsetMode;
-        /// <internal/>
-        /// <private/>
-        internal readonly Transform animationPose = new Transform();
-        /// <internal/>
-        /// <private/>
+        internal readonly DBTransform animationPose = new DBTransform();
         internal bool _transformDirty;
-        /// <internal/>
-        /// <private/>
         internal bool _childrenTransformDirty;
         private bool _localDirty;
-
-        /// <internal/>
-        /// <private/>
         internal bool _hasConstraint;
         private bool _visible;
         private int _cachedFrameIndex;
-        /// <internal/>
-        /// <private/>
         internal readonly BlendState _blendState = new BlendState();
-        /// <internal/>
-        /// <private/>
         internal BoneData _boneData;
-        /// <private/>
         protected Bone _parent;
-        /// <internal/>
-        /// <private/>
         internal List<int> _cachedFrameIndices = new List<int>();
-        /// <inheritDoc/>
+        
         protected override void _OnClear()
         {
             base._OnClear();
@@ -165,11 +117,11 @@ namespace DragonBones
 
                         if (flipX && flipY)
                         {
-                            rotation = global.rotation - (parent.global.rotation + Transform.PI);
+                            rotation = global.rotation - (parent.global.rotation + DBTransform.PI);
                         }
                         else if (flipX)
                         {
-                            rotation = global.rotation + parent.global.rotation + Transform.PI;
+                            rotation = global.rotation + parent.global.rotation + DBTransform.PI;
                         }
                         else if (flipY)
                         {
@@ -233,7 +185,7 @@ namespace DragonBones
                         parent.UpdateGlobalTransform();
                         if (parent.global.scaleX < 0.0)
                         {
-                            rotation = global.rotation + parent.global.rotation + Transform.PI;
+                            rotation = global.rotation + parent.global.rotation + DBTransform.PI;
                         }
                         else
                         {
@@ -246,7 +198,7 @@ namespace DragonBones
 
                             if (flipX != flipY || boneData.inheritReflection)
                             {
-                                global.skew += Transform.PI;
+                                global.skew += DBTransform.PI;
                             }
                         }
 
@@ -256,20 +208,20 @@ namespace DragonBones
                     {
                         if (flipX && flipY)
                         {
-                            rotation = global.rotation + Transform.PI;
+                            rotation = global.rotation + DBTransform.PI;
                         }
                         else
                         {
                             if (flipX)
                             {
-                                rotation = Transform.PI - global.rotation;
+                                rotation = DBTransform.PI - global.rotation;
                             }
                             else
                             {
                                 rotation = -global.rotation;
                             }
 
-                            global.skew += Transform.PI;
+                            global.skew += DBTransform.PI;
                         }
 
                         global.rotation = rotation;
@@ -294,20 +246,20 @@ namespace DragonBones
 
                     if (flipX && flipY)
                     {
-                        rotation = global.rotation + Transform.PI;
+                        rotation = global.rotation + DBTransform.PI;
                     }
                     else
                     {
                         if (flipX)
                         {
-                            rotation = Transform.PI - global.rotation;
+                            rotation = DBTransform.PI - global.rotation;
                         }
                         else
                         {
                             rotation = -global.rotation;
                         }
 
-                        global.skew += Transform.PI;
+                        global.skew += DBTransform.PI;
                     }
 
                     global.rotation = rotation;
@@ -333,9 +285,8 @@ namespace DragonBones
                 this._parent = this._armature.GetBone(this._boneData.parent.name);
             }
 
+            this.origin = this._boneData.DBTransform;
             this._armature._AddBone(this);
-            //
-            this.origin = this._boneData.transform;
         }
         /// <internal/>
         /// <private/>

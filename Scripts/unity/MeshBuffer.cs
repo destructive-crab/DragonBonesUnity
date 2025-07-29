@@ -188,20 +188,6 @@ namespace DragonBones
                 com.mesh = slot._meshBuffer.sharedMesh;
 
                 combines[i] = com;
-
-                //
-                var zspace = (slot._armature.proxy as UnityArmatureComponent).zSpace;
-                for (int j = 0; j < slot._meshBuffer.vertexCount; j++)
-                {
-                    index = oldVerticeOffset + j;
-                    newUVs[newVerticeIndex] = this.uvBuffers[index];
-                    newVertices[newVerticeIndex] = this.vertexBuffers[index];
-                    newColors[newVerticeIndex] = this.color32Buffers[index];
-
-                    newVertices[newVerticeIndex].z = -slot._verticeOrder * (zspace + UnitySlot.Z_OFFSET);
-
-                    newVerticeIndex++;
-                }
             }
 
             //

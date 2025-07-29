@@ -74,7 +74,7 @@ namespace DragonBones
 
             Rect rect = new Rect(selectionRect.x - 25f, selectionRect.y + 2, 15f, 15f);
 
-            if (go.GetComponent<UnityArmatureComponent>())
+            if (go.GetComponent<ArmatureUnityInstance>())
             {
                 rect.x = selectionRect.x + selectionRect.width - 15f;
                 GUI.Label(rect, textureArmature);
@@ -98,7 +98,7 @@ namespace DragonBones
             MeshFilter mf = go.GetComponent<MeshFilter>();
             if (mf && mf.sharedMesh &&
                 mf.transform.parent != null &&
-                mf.transform.parent.GetComponent<UnityArmatureComponent>() != null)
+                mf.transform.parent.GetComponent<ArmatureUnityInstance>() != null)
             {
                 if (mf.sharedMesh.vertexCount == 4)
                 {

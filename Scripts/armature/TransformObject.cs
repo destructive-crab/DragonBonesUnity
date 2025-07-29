@@ -44,7 +44,7 @@ namespace DragonBones
         /// <private/>
         protected static readonly Matrix _helpMatrix  = new Matrix();
         /// <private/>
-        protected static readonly Transform _helpTransform  = new Transform();
+        protected static readonly DBTransform HelpDBTransform  = new DBTransform();
         /// <private/>
         protected static readonly Point _helpPoint = new Point();
         /// <summary>
@@ -72,7 +72,7 @@ namespace DragonBones
         /// <see cref="UpdateGlobalTransform()"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
-        public readonly Transform global = new Transform();
+        public readonly DBTransform global = new DBTransform();
         /// <summary>
         /// - The offset transform relative to the armature or the parent bone coordinate system.
         /// </summary>
@@ -86,9 +86,9 @@ namespace DragonBones
         /// <see cref="dragonBones.Bone.InvalidUpdate()"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
-        public readonly Transform offset = new Transform();
+        public readonly DBTransform offset = new DBTransform();
         /// <private/>
-        public Transform origin;
+        public DBTransform origin;
         /// <private/>
         public object userData;
         /// <private/>

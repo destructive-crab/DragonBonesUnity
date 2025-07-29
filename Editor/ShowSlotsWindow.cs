@@ -40,19 +40,20 @@ namespace DragonBones
     {
         private const float WIDTH = 400.0f;
         private const float HEIGHT = 200.0f;
-        private readonly List<SlotItemData> _slotItems = new List<SlotItemData>();
-        private UnityArmatureComponent _armatureComp;
-
-        private Vector2 _scrollPos;
-        public static void OpenWindow(UnityArmatureComponent armatureComp)
+        
+        private readonly List<SlotItemData> slotItems = new List<SlotItemData>();
+        private ArmatureUnityInstance armatureUnityComp;
+        private Vector2 scrollPos;
+        
+        public static void OpenWindow(ArmatureUnityInstance armatureUnityComp)
         {
-            if (armatureComp == null)
+            if (armatureUnityComp == null)
             {
                 return;
             }
 
             var win = GetWindowWithRect(typeof(ShowSlotsWindow), new Rect(0.0f, 0.0f, WIDTH, HEIGHT), false) as ShowSlotsWindow;
-            win._armatureComp = armatureComp;
+            win.armatureUnityComp = armatureUnityComp;
             win.titleContent = new GUIContent("SlotList");
             win.Show();
         }
@@ -68,7 +69,7 @@ namespace DragonBones
                 slotItem.sumLevel = sumLevel;
                 slotItem.isSelected = slot.isIgnoreCombineMesh || (slot.renderDisplay != null && slot.renderDisplay.activeSelf);
 
-                this._slotItems.Add(slotItem);
+                this.slotItems.Add(slotItem);
                 if (slot.childArmature != null)
                 {
                     this.ColletSlotData(slot.childArmature, sumLevel + 1);
@@ -78,24 +79,24 @@ namespace DragonBones
 
         void OnGUI()
         {
-            if (this._slotItems.Count == 0)
+            if (this.slotItems.Count == 0)
             {
-                this.ColletSlotData(this._armatureComp.armature, 0);
+                this.ColletSlotData(this.armatureUnityComp.armature, 0);
             }
 
             //
-            ShowSlots(this._armatureComp.armature);
+            ShowSlots(this.armatureUnityComp.armature);
 
             //
             if (GUILayout.Button("Apply"))
             {
-                foreach (var slotItem in this._slotItems)
+                foreach (var slotItem in this.slotItems)
                 {
                     var slot = slotItem.slot;
                     if (slotItem.isSelected && slot.renderDisplay != null && !slot.renderDisplay.activeSelf)
                     {
                         slot.DisallowCombineMesh();
-                        var combineMeshs = (slot.armature.proxy as UnityArmatureComponent).GetComponent<UnityCombineMeshs>();
+                        var combineMeshs = (slot.armature.proxy as ArmatureUnityInstance).GetComponent<UnityCombineMeshes>();
                         if (combineMeshs != null)
                         {
                             combineMeshs.BeginCombineMesh();
@@ -111,17 +112,18 @@ namespace DragonBones
         {
             var leftMargin = 20;
             var indentSpace = 50;
-            _scrollPos = GUILayout.BeginScrollView(_scrollPos);
-            for (var i = 0; i < this._slotItems.Count; i++)
+            scrollPos = GUILayout.BeginScrollView(scrollPos);
+            for (var i = 0; i < this.slotItems.Count; i++)
             {
-                var slotItem = this._slotItems[i];
+                var slotItem = this.slotItems[i];
                 var slot = slotItem.slot;
 
                 //
                 GUILayout.BeginHorizontal();
-                var lableStyle = new GUIStyle();
-                lableStyle.margin.left = slotItem.sumLevel * indentSpace + leftMargin;
-                GUILayout.Label(slot.name, lableStyle, GUILayout.Width(100.0f));
+                GUIStyle labelStyle = new GUIStyle();
+                labelStyle.margin.left = slotItem.sumLevel * indentSpace + leftMargin;
+                GUILayout.Label(slot.name,  GUILayout.Width(100.0f));
+                
                 if(slot.renderDisplay == null || !slot.renderDisplay.activeSelf)
                 {
                     slotItem.isSelected = GUILayout.Toggle(slotItem.isSelected, "Active");

@@ -275,7 +275,7 @@ namespace DragonBones
 
         /// <internal/>
         /// <private/>
-        public int SetCacheFrame(Matrix globalTransformMatrix, Transform transform)
+        public int SetCacheFrame(Matrix globalTransformMatrix, DBTransform dbTransform)
         {
             var dataArray = this.parent.cachedFrames;
             var arrayOffset = dataArray.Count;
@@ -288,17 +288,17 @@ namespace DragonBones
             dataArray[arrayOffset + 3] = globalTransformMatrix.d;
             dataArray[arrayOffset + 4] = globalTransformMatrix.tx;
             dataArray[arrayOffset + 5] = globalTransformMatrix.ty;
-            dataArray[arrayOffset + 6] = transform.rotation;
-            dataArray[arrayOffset + 7] = transform.skew;
-            dataArray[arrayOffset + 8] = transform.scaleX;
-            dataArray[arrayOffset + 9] = transform.scaleY;
+            dataArray[arrayOffset + 6] = dbTransform.rotation;
+            dataArray[arrayOffset + 7] = dbTransform.skew;
+            dataArray[arrayOffset + 8] = dbTransform.scaleX;
+            dataArray[arrayOffset + 9] = dbTransform.scaleY;
 
             return arrayOffset;
         }
 
         /// <internal/>
         /// <private/>
-        public void GetCacheFrame(Matrix globalTransformMatrix, Transform transform, int arrayOffset)
+        public void GetCacheFrame(Matrix globalTransformMatrix, DBTransform dbTransform, int arrayOffset)
         {
             var dataArray = this.parent.cachedFrames;
             globalTransformMatrix.a = dataArray[arrayOffset];
@@ -307,12 +307,12 @@ namespace DragonBones
             globalTransformMatrix.d = dataArray[arrayOffset + 3];
             globalTransformMatrix.tx = dataArray[arrayOffset + 4];
             globalTransformMatrix.ty = dataArray[arrayOffset + 5];
-            transform.rotation = dataArray[arrayOffset + 6];
-            transform.skew = dataArray[arrayOffset + 7];
-            transform.scaleX = dataArray[arrayOffset + 8];
-            transform.scaleY = dataArray[arrayOffset + 9];
-            transform.x = globalTransformMatrix.tx;
-            transform.y = globalTransformMatrix.ty;
+            dbTransform.rotation = dataArray[arrayOffset + 6];
+            dbTransform.skew = dataArray[arrayOffset + 7];
+            dbTransform.scaleX = dataArray[arrayOffset + 8];
+            dbTransform.scaleY = dataArray[arrayOffset + 9];
+            dbTransform.x = globalTransformMatrix.tx;
+            dbTransform.y = globalTransformMatrix.ty;
         }
 
         /// <internal/>
@@ -555,7 +555,7 @@ namespace DragonBones
         /// <language>zh_CN</language>
         public string name;
         /// <private/>
-        public readonly Transform transform = new Transform();
+        public readonly DBTransform DBTransform = new DBTransform();
         /// <private/>
         public UserData userData = null; // Initial value.
         /// <summary>
@@ -585,7 +585,7 @@ namespace DragonBones
             this.inheritReflection = false;
             this.length = 0.0f;
             this.name = "";
-            this.transform.Identity();
+            this.DBTransform.Identity();
             this.userData = null;
             this.parent = null;
         }

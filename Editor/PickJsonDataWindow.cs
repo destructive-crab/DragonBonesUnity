@@ -36,28 +36,28 @@ namespace DragonBones
         //private const string PickFileFileter = "_ske t:TextAsset";
         private const string PickFileFileter = "t:TextAsset";
 
-        private UnityArmatureComponent _armatureComp;
+        private ArmatureUnityInstance armatureUnityComp;
         private TextAsset _dragonBoneJSONData;
 
         private bool _isOpenPickWindow = false;
         private int _controlID;
 
         //
-        public static void OpenWindow(UnityArmatureComponent armatureComp)
+        public static void OpenWindow(ArmatureUnityInstance armatureUnityComp)
         {
-            if (armatureComp == null)
+            if (armatureUnityComp == null)
             {
                 return;
             }
 
             //
             var win = GetWindow<PickJsonDataWindow>();
-            win._armatureComp = armatureComp;
+            win.armatureUnityComp = armatureUnityComp;
         }
 
         private void OnDestroy()
         {
-            _armatureComp = null;
+            armatureUnityComp = null;
             _dragonBoneJSONData = null;
 
             _isOpenPickWindow = false;
@@ -123,7 +123,7 @@ namespace DragonBones
             UnityDragonBonesData.TextureAtlas[] textureAtlas = DBUnityEditor.GetTextureAtlasByJSONs(textureAtlasJSONs);
 
             UnityDragonBonesData data = DBUnityEditor.CreateUnityDragonBonesData(_dragonBoneJSONData, textureAtlas);
-            _armatureComp.unityData = data;
+            armatureUnityComp.unityData = data;
         }
     }
 }

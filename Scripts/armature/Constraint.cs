@@ -29,7 +29,7 @@ namespace DragonBones
     internal abstract class Constraint : BaseObject
     {
         protected static readonly Matrix _helpMatrix = new Matrix();
-        protected static readonly Transform _helpTransform = new Transform();
+        protected static readonly DBTransform HelpDBTransform = new DBTransform();
         protected static readonly Point _helpPoint = new Point();
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace DragonBones
                 radian += (float)Math.PI;
             }
 
-            global.rotation += Transform.NormalizeRadian(radian - global.rotation) * this._weight;
+            global.rotation += DBTransform.NormalizeRadian(radian - global.rotation) * this._weight;
             global.ToMatrix(globalTransformMatrix);
         }
 
@@ -181,7 +181,7 @@ namespace DragonBones
                 radianA = (float)Math.Atan2(global.y - parentGlobal.y, global.x - parentGlobal.x);
             }
 
-            var dR = Transform.NormalizeRadian(radianA - rawRadianA);
+            var dR = DBTransform.NormalizeRadian(radianA - rawRadianA);
             parentGlobal.rotation = rawParentRadian + dR * this._weight;
             parentGlobal.ToMatrix(parent.globalTransformMatrix);
             //
@@ -195,7 +195,7 @@ namespace DragonBones
                 radianB += (float)Math.PI;
             }
 
-            global.rotation = parentGlobal.rotation + rawRadian - rawParentRadian + Transform.NormalizeRadian(radianB - dR - rawRadian) * this._weight;
+            global.rotation = parentGlobal.rotation + rawRadian - rawParentRadian + DBTransform.NormalizeRadian(radianB - dR - rawRadian) * this._weight;
             global.ToMatrix(globalTransformMatrix);
         }
 

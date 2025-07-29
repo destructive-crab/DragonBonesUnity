@@ -35,7 +35,7 @@ namespace DragonBones
     /// </summary>
     /// <version>DragonBones 3.0</version>
     /// <language>zh_CN</language>
-    public class Transform
+    public class DBTransform
     {
         /// <private/>
         public static readonly float PI = 3.141593f;
@@ -135,7 +135,7 @@ namespace DragonBones
         public float scaleY = 1.0f;
 
         /// <private/>
-        public Transform()
+        public DBTransform()
         {
             
         }
@@ -146,7 +146,7 @@ namespace DragonBones
         }
 
         /// <private/>
-        public Transform CopyFrom(Transform value)
+        public DBTransform CopyFrom(DBTransform value)
         {
             this.x = value.x;
             this.y = value.y;
@@ -159,7 +159,7 @@ namespace DragonBones
         }
 
         /// <private/>
-        public Transform Identity()
+        public DBTransform Identity()
         {
             this.x = this.y = 0.0f;
             this.skew = this.rotation = 0.0f;
@@ -169,7 +169,7 @@ namespace DragonBones
         }
 
         /// <private/>
-        public Transform Add(Transform value)
+        public DBTransform Add(DBTransform value)
         {
             this.x += value.x;
             this.y += value.y;
@@ -182,7 +182,7 @@ namespace DragonBones
         }
 
         /// <private/>
-        public Transform Minus(Transform value)
+        public DBTransform Minus(DBTransform value)
         {
             this.x -= value.x;
             this.y -= value.y;
@@ -195,7 +195,7 @@ namespace DragonBones
         }
 
         /// <private/>
-        public Transform FromMatrix(Matrix matrix)
+        public DBTransform FromMatrix(Matrix matrix)
         {
             var backupScaleX = this.scaleX;
             var backupScaleY = this.scaleY;
@@ -237,7 +237,7 @@ namespace DragonBones
         }
 
         /// <private/>
-        public Transform ToMatrix(Matrix matrix)
+        public DBTransform ToMatrix(Matrix matrix)
         {
             if(this.rotation == 0.0f)
             {

@@ -22,15 +22,16 @@
  */
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DragonBones
 {
     /// <summary>
     /// - Armature is the core of the skeleton animation system.
     /// </summary>
-    /// <see cref="DragonBones.ArmatureData"/>
-    /// <see cref="DragonBones.Bone"/>
-    /// <see cref="DragonBones.Slot"/>
+    /// <see cref="ArmatureData"/>
+    /// <see cref="Bone"/>
+    /// <see cref="Slot"/>
     /// <see cref="DragonBones.Animation"/>
     /// <version>DragonBones 3.0</version>
     /// <language>en_US</language>
@@ -38,9 +39,9 @@ namespace DragonBones
     /// <summary>
     /// - 骨架是骨骼动画系统的核心。
     /// </summary>
-    /// <see cref="DragonBones.ArmatureData"/>
-    /// <see cref="DragonBones.Bone"/>
-    /// <see cref="DragonBones.Slot"/>
+    /// <see cref="ArmatureData"/>
+    /// <see cref="Bone"/>
+    /// <see cref="Slot"/>
     /// <see cref="DragonBones.Animation"/>
     /// <version>DragonBones 3.0</version>
     /// <language>zh_CN</language>
@@ -403,8 +404,8 @@ namespace DragonBones
         /// </summary>
         /// <param name="boneName">- The bone name. (If not set, all bones will be update)</param>
         /// <param name="updateSlot">- Whether to update the bone's slots. (Default: false)</param>
-        /// <see cref="DragonBones.Bone.InvalidUpdate()"/>
-        /// <see cref="DragonBones.Slot.InvalidUpdate()"/>
+        /// <see cref="Bone.InvalidUpdate()"/>
+        /// <see cref="Slot.InvalidUpdate()"/>
         /// <version>DragonBones 3.0</version>
         /// <language>en_US</language>
 
@@ -413,8 +414,8 @@ namespace DragonBones
         /// </summary>
         /// <param name="boneName">- 骨骼名称。 （如果未设置，将更新所有骨骼）</param>
         /// <param name="updateSlot">- 是否更新骨骼的插槽。 （默认: false）</param>
-        /// <see cref="DragonBones.Bone.InvalidUpdate()"/>
-        /// <see cref="DragonBones.Slot.InvalidUpdate()"/>
+        /// <see cref="Bone.InvalidUpdate()"/>
+        /// <see cref="Slot.InvalidUpdate()"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
         public void InvalidUpdate(string boneName = null, bool updateSlot = false)
@@ -620,7 +621,7 @@ namespace DragonBones
         /// - Get a specific bone.
         /// </summary>
         /// <param name="name">- The bone name.</param>
-        /// <see cref="DragonBones.Bone"/>
+        /// <see cref="Bone"/>
         /// <version>DragonBones 3.0</version>
         /// <language>en_US</language>
 
@@ -628,7 +629,7 @@ namespace DragonBones
         /// - 获取特定的骨骼。
         /// </summary>
         /// <param name="name">- 骨骼名称。</param>
-        /// <see cref="DragonBones.Bone"/>
+        /// <see cref="Bone"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
         public Bone GetBone(string name)
@@ -647,7 +648,7 @@ namespace DragonBones
         /// - Get a specific bone by the display.
         /// </summary>
         /// <param name="display">- The display object.</param>
-        /// <see cref="DragonBones.Bone"/>
+        /// <see cref="Bone"/>
         /// <version>DragonBones 3.0</version>
         /// <language>en_US</language>
 
@@ -655,7 +656,7 @@ namespace DragonBones
         /// - 通过显示对象获取特定的骨骼。
         /// </summary>
         /// <param name="display">- 显示对象。</param>
-        /// <see cref="DragonBones.Bone"/>
+        /// <see cref="Bone"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
         public Bone GetBoneByDisplay(object display)
@@ -668,7 +669,7 @@ namespace DragonBones
         /// - Get a specific slot.
         /// </summary>
         /// <param name="name">- The slot name.</param>
-        /// <see cref="DragonBones.Slot"/>
+        /// <see cref="Slot"/>
         /// <version>DragonBones 3.0</version>
         /// <language>en_US</language>
 
@@ -676,7 +677,7 @@ namespace DragonBones
         /// - 获取特定的插槽。
         /// </summary>
         /// <param name="name">- 插槽名称。</param>
-        /// <see cref="DragonBones.Slot"/>
+        /// <see cref="Slot"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
         public Slot GetSlot(string name)
@@ -695,7 +696,7 @@ namespace DragonBones
         /// - Get a specific slot by the display.
         /// </summary>
         /// <param name="display">- The display object.</param>
-        /// <see cref="DragonBones.Slot"/>
+        /// <see cref="Slot"/>
         /// <version>DragonBones 3.0</version>
         /// <language>en_US</language>
 
@@ -703,7 +704,7 @@ namespace DragonBones
         /// - 通过显示对象获取特定的插槽。
         /// </summary>
         /// <param name="display">- 显示对象。</param>
-        /// <see cref="DragonBones.Slot"/>
+        /// <see cref="Slot"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
         public Slot GetSlotByDisplay(object display)
@@ -724,14 +725,14 @@ namespace DragonBones
         /// <summary>
         /// - Get all bones.
         /// </summary>
-        /// <see cref="DragonBones.Bone"/>
+        /// <see cref="Bone"/>
         /// <version>DragonBones 3.0</version>
         /// <language>en_US</language>
 
         /// <summary>
         /// - 获取所有的骨骼。
         /// </summary>
-        /// <see cref="DragonBones.Bone"/>
+        /// <see cref="Bone"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
         public List<Bone> GetBones()
@@ -741,14 +742,14 @@ namespace DragonBones
         /// <summary>
         /// - Get all slots.
         /// </summary>
-        /// <see cref="DragonBones.Slot"/>
+        /// <see cref="Slot"/>
         /// <version>DragonBones 3.0</version>
         /// <language>en_US</language>
 
         /// <summary>
         /// - 获取所有的插槽。
         /// </summary>
-        /// <see cref="DragonBones.Slot"/>
+        /// <see cref="Slot"/>
         /// <version>DragonBones 3.0</version>
         /// <language>zh_CN</language>
         public List<Slot> GetSlots()
@@ -818,8 +819,8 @@ namespace DragonBones
         ///     armature.cacheFrameRate = 24;
         /// </pre>
         /// </example>
-        /// <see cref="DragonBones.DragonBonesData.frameRate"/>
-        /// <see cref="DragonBones.ArmatureData.frameRate"/>
+        /// <see cref="DragonBonesData.frameRate"/>
+        /// <see cref="ArmatureData.frameRate"/>
         /// <version>DragonBones 4.5</version>
         /// <language>en_US</language>
 
@@ -835,8 +836,8 @@ namespace DragonBones
         ///     armature.cacheFrameRate = 24;
         /// </pre>
         /// </example>
-        /// <see cref="DragonBones.DragonBonesData.frameRate"/>
-        /// <see cref="DragonBones.ArmatureData.frameRate"/>
+        /// <see cref="DragonBonesData.frameRate"/>
+        /// <see cref="ArmatureData.frameRate"/>
         /// <version>DragonBones 4.5</version>
         /// <language>zh_CN</language>
         public uint cacheFrameRate
@@ -878,14 +879,14 @@ namespace DragonBones
         /// <summary>
         /// - The armature data.
         /// </summary>
-        /// <see cref="DragonBones.ArmatureData"/>
+        /// <see cref="ArmatureData"/>
         /// <version>DragonBones 4.5</version>
         /// <language>en_US</language>
 
         /// <summary>
         /// - 骨架数据。
         /// </summary>
-        /// <see cref="DragonBones.ArmatureData"/>
+        /// <see cref="ArmatureData"/>
         /// <version>DragonBones 4.5</version>
         /// <language>zh_CN</language>
         public ArmatureData armatureData
@@ -1012,19 +1013,25 @@ namespace DragonBones
         /// <summary>
         /// - Get the parent slot which the armature belongs to.
         /// </summary>
-        /// <see cref="DragonBones.Slot"/>
+        /// <see cref="Slot"/>
         /// <version>DragonBones 4.5</version>
         /// <language>en_US</language>
 
         /// <summary>
         /// - 该骨架所属的父插槽。
         /// </summary>
-        /// <see cref="DragonBones.Slot"/>
+        /// <see cref="Slot"/>
         /// <version>DragonBones 4.5</version>
         /// <language>zh_CN</language>
         public Slot parent
         {
             get { return this._parent; }
+        }
+
+        public bool IsPivotApplied { get; private set; } = false;
+        public void BonesBuildingFinished()
+        {
+            
         }
     }
 }

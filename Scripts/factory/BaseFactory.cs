@@ -217,12 +217,15 @@ namespace DragonBones
         protected void _BuildBones(BuildArmaturePackage dataPackage, Armature armature)
         {
             var bones = dataPackage.armature.sortedBones;
+            
             for (int i = 0, l = bones.Count; i < l; ++i)
             {
                 var boneData = bones[i];
                 var bone = BaseObject.BorrowObject<Bone>();
                 bone.Init(boneData, armature);
             }
+
+            armature.BonesBuildingFinished();
         }
         /// <private/>
         protected void _BuildSlots(BuildArmaturePackage dataPackage, Armature armature)

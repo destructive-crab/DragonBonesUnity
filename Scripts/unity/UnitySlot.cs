@@ -72,11 +72,11 @@ namespace DragonBones
         internal int _sumMeshIndex = -1;
         internal int _verticeOrder = -1;
         internal int _verticeOffset = -1;
-        internal UnityCombineMeshs _combineMesh = null;
+        internal UnityCombineMeshes _combineMesh = null;
         internal bool _isActive = false;
 
         private bool _skewed;
-        private UnityArmatureComponent _proxy;
+        private ArmatureUnityInstance _proxy;
         private BlendMode _currentBlendMode;
 
         /**
@@ -146,7 +146,7 @@ namespace DragonBones
             _renderDisplay = (_display != null ? _display : _rawDisplay) as GameObject;
 
             //
-            _proxy = _armature.proxy as UnityArmatureComponent;
+            _proxy = _armature.proxy as ArmatureUnityInstance;
             if (_proxy.isUGUI)
             {
                 _uiDisplay = _renderDisplay.GetComponent<UnityUGUIDisplay>();
@@ -184,14 +184,13 @@ namespace DragonBones
          */
         protected override void _AddDisplay()
         {
-            _proxy = _armature.proxy as UnityArmatureComponent;
+            _proxy = _armature.proxy as ArmatureUnityInstance;
             var container = _proxy;
             if (_renderDisplay.transform.parent != container.transform)
             {
                 _renderDisplay.transform.SetParent(container.transform);
 
                 _helpVector3.Set(0.0f, 0.0f, 0.0f);
-                _SetZorder(_helpVector3);
             }
         }
         /**
@@ -209,7 +208,6 @@ namespace DragonBones
             _renderDisplay.SetActive(true);
             _renderDisplay.transform.SetSiblingIndex(index);
 
-            _SetZorder(prevDisplay.transform.localPosition);
         }
         /**
          * @private
@@ -221,70 +219,6 @@ namespace DragonBones
         /**
          * @private
          */
-        protected override void _UpdateZOrder()
-        {
-            _SetZorder(this._renderDisplay.transform.localPosition);
-
-            //
-            if (this._childArmature != null || !this._isActive)
-            {
-                this._CombineMesh();
-            }
-        }
-
-        /**
-         * @internal
-         */
-        internal void _SetZorder(Vector3 zorderPos)
-        {
-            if (this._isCombineMesh)
-            {
-                var meshBuffer = this._combineMesh.meshBuffers[this._sumMeshIndex];
-                meshBuffer.zorderDirty = true;
-            }
-
-            {
-                zorderPos.z = -this._zOrder * (this._proxy._zSpace + Z_OFFSET);
-
-                if (_renderDisplay != null)
-                {
-                    _renderDisplay.transform.localPosition = zorderPos;
-                    _renderDisplay.transform.SetSiblingIndex(_zOrder);
-
-                    if (_proxy.isUGUI)
-                    {
-                        return;
-                    }
-
-                    if (_childArmature == null)
-                    {
-                        _meshRenderer.sortingLayerName = _proxy.sortingLayerName;
-                        if (_proxy.sortingMode == SortingMode.SortByOrder)
-                        {
-                            _meshRenderer.sortingOrder = _zOrder * UnityArmatureComponent.ORDER_SPACE;
-                        }
-                        else
-                        {
-                            _meshRenderer.sortingOrder = _proxy.sortingOrder;
-                        }
-                    }
-                    else
-                    {
-                        var childArmatureComp = childArmature.proxy as UnityArmatureComponent;
-                        childArmatureComp._sortingMode = _proxy._sortingMode;
-                        childArmatureComp._sortingLayerName = _proxy._sortingLayerName;
-                        if (_proxy._sortingMode == SortingMode.SortByOrder)
-                        {
-                            childArmatureComp.sortingOrder = _zOrder * UnityArmatureComponent.ORDER_SPACE;
-                        }
-                        else
-                        {
-                            childArmatureComp.sortingOrder = _proxy._sortingOrder;
-                        }
-                    }
-                }
-            }
-        }
 
         public void DisallowCombineMesh()
         {
@@ -364,7 +298,7 @@ namespace DragonBones
                 this._isIgnoreCombineMesh = true;
             }
 
-            var combineMeshComp = this._proxy.GetComponent<UnityCombineMeshs>();
+            var combineMeshComp = this._proxy.GetComponent<UnityCombineMeshes>();
             //从来没有合并过，触发合并，那么尝试合并
             if (combineMeshComp != null)
             {
@@ -459,7 +393,7 @@ namespace DragonBones
             else
             {
                 //Set all childArmature color dirty
-                (this._childArmature.proxy as UnityArmatureComponent).color = _colorTransform;
+                (this._childArmature.proxy as ArmatureUnityInstance).color = _colorTransform;
             }
 
         }
@@ -869,7 +803,7 @@ namespace DragonBones
                 {
                     _helpVector3.x = flipY ? 180.0f : 0.0f;
                     _helpVector3.y = flipX ? 180.0f : 0.0f;
-                    _helpVector3.z = global.rotation * Transform.RAD_DEG;
+                    _helpVector3.z = global.rotation * DBTransform.RAD_DEG;
                 }
                 else
                 {
@@ -879,7 +813,7 @@ namespace DragonBones
                     //showing the order is wrong, only in the child slot to deal with X, Y axis flip 
                     _helpVector3.x = 0.0f;
                     _helpVector3.y = 0.0f;
-                    _helpVector3.z = global.rotation * Transform.RAD_DEG;
+                    _helpVector3.z = global.rotation * DBTransform.RAD_DEG;
 
                     //这里这样处理，是因为子骨架的插槽也要处理z值,那就在容器中反一下，子插槽再正过来
                     if (flipX != flipY)
@@ -916,11 +850,11 @@ namespace DragonBones
                     var dSkew = skew;
                     if (flipX && flipY)
                     {
-                        dSkew = -skew + Transform.PI;
+                        dSkew = -skew + DBTransform.PI;
                     }
                     else if (!flipX && !flipY)
                     {
-                        dSkew = -skew - Transform.PI;
+                        dSkew = -skew - DBTransform.PI;
                     }
 
                     var skewed = dSkew < -0.01f || 0.01f < dSkew;
@@ -1009,7 +943,7 @@ namespace DragonBones
             get { return this._renderDisplay; }
         }
 
-        public UnityArmatureComponent proxy
+        public ArmatureUnityInstance proxy
         {
             get { return this._proxy; }
         }
